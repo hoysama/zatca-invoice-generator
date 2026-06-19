@@ -19,7 +19,7 @@ const app = new Hono<{ Bindings: Env }>();
 app.use(
   "*",
   cors({
-    origin: ["http://localhost:3000", "https://zatca-invoice.pages.dev"],
+    origin: ["http://localhost:3000", "https://zatca-invoice.pages.dev", "https://zatca-invoice-generator.pages.dev"],
     allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowHeaders: ["Content-Type", "Authorization"],
     credentials: true,
