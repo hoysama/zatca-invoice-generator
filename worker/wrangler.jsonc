@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "zatca-invoice-worker",
+  "main": "src/index.ts",
+  "compatibility_date": "2024-11-12",
+  "compatibility_flags": ["nodejs_compat"],
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "zatca-db",
+      "database_id": "4fccf798-845d-4b17-bf44-274ecb337240",
+      "migrations_dir": "drizzle/migrations"
+    }
+  ],
+
+  "vars": {
+    "JWT_SECRET": "zatca-invoice-secret-key-2026-change-in-production-env"
+  }
+}
