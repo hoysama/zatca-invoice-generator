@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+const API = "https://zatca-invoice-worker.hoysamax.workers.dev";
+
 export default function RegisterPage() {
   const router = useRouter();
   const [name, setName] = useState("");
@@ -18,19 +20,20 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/sign-up", {
+      const res = await fetch(`${API}/api/auth/sign-up`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
       });
 
+      const data = await res.json();
+
       if (!res.ok) {
-        const data = await res.json();
         throw new Error(data.error || "فشل إنشاء الحساب");
       }
 
+      document.cookie = `auth_token=${data.token}; path=/; max-age=${7 * 24 * 60 * 60}; secure; samesite=lax`;
       router.push("/dashboard");
-      router.refresh();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "حدث خطأ");
     } finally {
@@ -53,53 +56,32 @@ export default function RegisterPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl shadow-sm border space-y-4">
-          {error && (
-            <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">{error}</div>
-          )}
+          {error && <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">{error}</div>}
 
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">الاسم الكامل</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
+            <input type="text" value={name} onChange={(e) => setName(e.target.value)} required
               className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
-              placeholder="محمد أحمد"
-            />
+              placeholder="محمد أحمد" />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">البريد الإلكتروني</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
               className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
-              placeholder="example@email.com"
-            />
+              placeholder="example@email.com" />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">كلمة المرور</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={8}
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8}
               className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
-              placeholder="••••••••"
-            />
+              placeholder="••••••••" />
             <p className="text-xs text-slate-500 mt-1">8 أحرف على الأقل</p>
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-emerald-600 text-white py-2 rounded-lg font-medium hover:bg-emerald-700 transition disabled:opacity-50"
-          >
+          <button type="submit" disabled={loading}
+            className="w-full bg-emerald-600 text-white py-2 rounded-lg font-medium hover:bg-emerald-700 transition disabled:opacity-50">
             {loading ? "جاري إنشاء الحساب..." : "إنشاء الحساب"}
           </button>
 

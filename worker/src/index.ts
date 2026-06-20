@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import { serveStatic } from "hono/cloudflare-workers";
 import { authMiddleware } from "./middleware/auth";
 import { invoiceRoutes } from "./routes/invoices";
 import { clientRoutes } from "./routes/clients";
@@ -11,6 +12,7 @@ export type Env = {
   JWT_SECRET: string;
   PAYPAL_CLIENT_ID: string;
   PAYPAL_CLIENT_SECRET: string;
+  ASSETS: Fetcher;
 };
 
 const app = new Hono<{ Bindings: Env }>();
@@ -19,7 +21,11 @@ const app = new Hono<{ Bindings: Env }>();
 app.use(
   "*",
   cors({
-    origin: ["http://localhost:3000", "https://zatca-invoice.pages.dev", "https://zatca-invoice-generator.pages.dev"],
+    origin: [
+      "http://localhost:3000",
+      "https://zatca-invoice.pages.dev",
+      "https://zatca-invoice-generator.pages.dev",
+    ],
     allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -38,5 +44,15 @@ app.route("/api/auth", auth);
 app.route("/api/invoices", invoiceRoutes);
 app.route("/api/clients", clientRoutes);
 app.route("/api/subscriptions", subscriptionRoutes);
+
+// Serve static files from ASSETS binding
+app.get("/_next/*", (c) => {
+  return c.env.ASSETS.fetch(c.req.raw);
+});
+
+// Serve all other routes (SPA fallback)
+app.get("*", (c) => {
+  return c.env.ASSETS.fetch(c.req.raw);
+});
 
 export default app;
