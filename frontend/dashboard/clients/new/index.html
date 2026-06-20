@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إضافة عميل جديد - ZATCA Invoice</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <a href="/" class="logo">
+        <div class="logo-icon">Z</div>
+        <div class="logo-text">ZATCA <span>Invoice</span></div>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">القائمة الرئيسية</div>
+        <a href="/dashboard" class="nav-item"><span>📊</span><span>لوحة التحكم</span></a>
+        <a href="/dashboard/clients" class="nav-item active"><span>👥</span><span>العملاء</span></a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">الإعدادات</div>
+        <a href="#" class="nav-item" onclick="logout()"><span>🚪</span><span>تسجيل الخروج</span></a>
+      </div>
+    </nav>
+  </aside>
+  
+  <main class="main-content">
+    <header class="topbar">
+      <h1 class="page-title">إضافة عميل جديد</h1>
+    </header>
+    
+    <div class="content">
+      <div class="card" style="max-width: 700px;">
+        <div class="card-header">
+          <h2 style="font-size: 1.125rem; font-weight: 700;">بيانات العميل</h2>
+        </div>
+        <div class="card-body">
+          <div id="errorMsg" class="alert alert-error" style="display: none;"></div>
+          <div id="successMsg" class="alert alert-success" style="display: none;"></div>
+          
+          <form id="clientForm" onsubmit="return handleClientSubmit(event)">
+            <div class="form-group">
+              <label class="form-label">اسم العميل <span style="color: #dc2626;">*</span></label>
+              <input type="text" id="name" class="form-input" placeholder="اسم الشركة أو الشخص" required>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label class="form-label">البريد الإلكتروني</label>
+                <input type="email" id="email" class="form-input" placeholder="example@email.com">
+              </div>
+              <div class="form-group">
+                <label class="form-label">رقم الهاتف</label>
+                <input type="tel" id="phone" class="form-input" placeholder="05xxxxxxxx">
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">الرقم الضريبي</label>
+              <input type="text" id="vatNumber" class="form-input" placeholder="3xxxxxxxxxxx">
+              <p class="form-hint">10 أرقام - مطلوب للفواتير الضريبية</p>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">العنوان</label>
+              <textarea id="address" class="form-input" rows="2" placeholder="عنوان العميل..."></textarea>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+              <button type="submit" id="submitBtn" class="btn btn-primary">إضافة العميل</button>
+              <a href="/dashboard" class="btn btn-outline">إلغاء</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/auth.js"></script>
+</body>
+</html>

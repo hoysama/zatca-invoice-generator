@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إنشاء فاتورة - ZATCA Invoice</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <a href="/" class="logo">
+        <div class="logo-icon">Z</div>
+        <div class="logo-text">ZATCA <span>Invoice</span></div>
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">القائمة الرئيسية</div>
+        <a href="/dashboard" class="nav-item"><span>📊</span><span>لوحة التحكم</span></a>
+        <a href="/dashboard/clients" class="nav-item"><span>👥</span><span>العملاء</span></a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">الإعدادات</div>
+        <a href="#" class="nav-item" onclick="logout()"><span>🚪</span><span>تسجيل الخروج</span></a>
+      </div>
+    </nav>
+  </aside>
+  
+  <main class="main-content">
+    <header class="topbar">
+      <h1 class="page-title">فاتورة جديدة</h1>
+    </header>
+    
+    <div class="content">
+      <form onsubmit="return handleInvoiceSubmit(event)" style="max-width: 800px;">
+        <div id="errorMsg" class="alert alert-error" style="display: none;"></div>
+        
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <div class="card-header"><h2 style="font-size: 1.125rem; font-weight: 700;">بيانات العميل</h2></div>
+          <div class="card-body">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">اختر العميل</label>
+              <select id="clientId" class="form-input" required>
+                <option value="">-- اختر عميل --</option>
+              </select>
+              <p id="noClientsMsg" class="form-hint" style="display: none;">
+                لا يوجد عملاء. <a href="/dashboard/clients/new" style="color: var(--color-text-primary);">أضف عميل جديد</a>
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <div class="card-header"><h2 style="font-size: 1.125rem; font-weight: 700;">الأصناف</h2></div>
+          <div class="card-body">
+            <div id="itemsList">
+              <div style="display: flex; gap: 1rem; align-items: start; margin-bottom: 1rem;">
+                <div style="flex: 1;"><input type="text" placeholder="وصف الصنف" required class="form-input item-desc"></div>
+                <div style="width: 100px;"><input type="number" placeholder="الكمية" min="1" value="1" required class="form-input item-qty"></div>
+                <div style="width: 120px;"><input type="number" placeholder="السعر" min="0" step="0.01" required class="form-input item-price"></div>
+                <div style="width: 100px; padding-top: 0.75rem; text-align: left;"><span class="item-total">0.00</span></div>
+              </div>
+            </div>
+            <button type="button" onclick="addItemRow()" class="btn btn-ghost btn-sm">+ إضافة صنف</button>
+          </div>
+        </div>
+        
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <div class="card-header"><h2 style="font-size: 1.125rem; font-weight: 700;">ملاحظات</h2></div>
+          <div class="card-body">
+            <textarea id="notes" class="form-input" rows="3" placeholder="أضف ملاحظات على الفاتورة..."></textarea>
+          </div>
+        </div>
+        
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <div class="card-body">
+            <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; color: var(--color-text-secondary);">
+              <span>المجموع الفرعي</span><span id="subtotal">0.00 ر.س</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; color: var(--color-text-secondary);">
+              <span>ضريبة القيمة المضافة (15%)</span><span id="tax">0.00 ر.س</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 1rem 0; border-top: 2px solid var(--color-border-default); font-size: 1.25rem; font-weight: 700;">
+              <span>الإجمالي</span><span id="total">0.00 ر.س</span>
+            </div>
+          </div>
+        </div>
+        
+        <div style="display: flex; gap: 1rem;">
+          <button type="submit" id="submitBtn" class="btn btn-primary">إنشاء الفاتورة</button>
+          <a href="/dashboard" class="btn btn-outline">إلغاء</a>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script src="/js/auth.js"></script>
+  <script>
+    if (!getToken()) window.location.href = '/login';
+    loadClientsForInvoice();
+    document.getElementById('itemsList').addEventListener('input', calculateTotals);
+  </script>
+</body>
+</html>
