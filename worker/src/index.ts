@@ -21,11 +21,11 @@ const app = new Hono<{ Bindings: Env }>();
 app.use(
   "*",
   cors({
-    origin: [
-      "http://localhost:3000",
-      "https://zatca-invoice.pages.dev",
-      "https://zatca-invoice-generator.pages.dev",
-    ],
+    origin: function(origin) {
+      return origin.endsWith('.zatca-invoice-generator.pages.dev') || 
+             origin === 'https://zatca-invoice.pages.dev' ||
+             origin === 'http://localhost:3000';
+    },
     allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowHeaders: ["Content-Type", "Authorization"],
     credentials: true,
